@@ -6,3 +6,4 @@ coverage
 .commandcode
 pnpm-lock.yaml
 pnpm-workspace.yaml
+LICENSE
