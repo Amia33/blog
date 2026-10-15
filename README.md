@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Amia blog demo
 
-## Getting Started
+This public repository is a runnable Next.js blog foundation. All posts, settings, and assets in it are synthetic examples. **Never add real drafts, private assets, credentials, or Q&A answers here.** The production blog should be a separate private repository containing the app and its real `content/` directory.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router, React, and TypeScript
+- Tailwind CSS 4 with daisyUI 5
+- Velite for MDX collections, schemas, type generation, and public asset processing
+- Prettier, ESLint, and Stylelint
+- M PLUS 1, M PLUS 1 Code, and Noto Sans SC/system fallback for mixed Japanese, English, and Chinese text
+
+## Local development
+
+Use pnpm 12.11.2 and Node.js 20+.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`pnpm dev` validates and generates the public content, watches the content directory, and starts Next.js. Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm content:build
+pnpm lint
+pnpm lint:styles
+pnpm format:check
+pnpm build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Authoring content
 
-## Learn More
+Add public posts under `content/posts/public/<slug>.mdx`. A post needs `title`, `slug`, `date`, `summary`, `tags`, and a relative `cover` image. The schema in `velite.config.ts` validates required fields and unique slugs at build time. Use UTF-8; article text can mix Chinese, Japanese, and English without locale routing.
 
-To learn more about Next.js, take a look at the following resources:
+Public images live in `content/assets/public/` and are copied to generated, hashed paths under `public/static/`. Reference them relative to a post, for example `../../assets/public/morning-window.svg`. Site/UI copy is in `content/settings/`; any settings rendered into the site are public and must not contain secrets.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+MDX supports the approved `<Details summary="...">...</Details>` component. Content validation rejects imports, exports, JavaScript expressions, and unsupported JSX component names. The demo's `content/posts/protected/` and `content/assets/protected/` are excluded from the public content pipeline, but this repository is public, so even those files are visible in Git. They contain synthetic placeholders only and do not demonstrate real access control.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production repository and Vercel
 
-## Deploy on Vercel
+Create a separate private GitHub repository under your personal account by copying/continuing the app and its content contract. Put real posts, assets, and settings in that private repository's own `content/` directory; do not use this public demo as the production content store and do not add a private submodule. Connect the private app repository to Vercel through the GitHub integration. Vercel's documented private personal-account flow requires the repository owner to grant Vercel access; organization-owned private repositories have different commit-author/team rules.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The source repository being private does not make published pages private. Anything rendered into public HTML, metadata, client code, feeds, indexes, or public assets is available to visitors. The planned per-post Q&A feature is not implemented here. Confidential content must stay out of public/static output and later require server-side authorization with isolated private/no-store delivery; a Q&A answer by itself is not strong authentication.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validation and formatting
+
+Use `pnpm format` to format files, `pnpm lint` for ESLint, and `pnpm lint:styles` for Stylelint. Run `pnpm content:build` after changing post metadata/assets, and `pnpm build` before deployment.

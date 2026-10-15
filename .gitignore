@@ -166,5 +166,9 @@ vite.config.ts.timestamp-*
 ## typescript
 next-env.d.ts
 
+# Velite generated content and copied public assets
+.velite/
+/public/static/
+
 # custom
 .commandcode/taste
