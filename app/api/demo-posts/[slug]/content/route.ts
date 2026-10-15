@@ -1,8 +1,5 @@
 import { cookies } from "next/headers";
-import {
-  demoContentCookieName,
-  handleDemoContent,
-} from "@/lib/demo-content-handler";
+import { handleDemoContentRequest } from "@/lib/demo-content-handler";
 import {
   demoSigningSecret,
   getDemoPost,
@@ -14,11 +11,14 @@ type Context = {
 };
 
 export async function GET(_request: Request, { params }: Context) {
-  // The handler checks the slug-scoped cookie on every body request.
   const { slug } = await params;
-  const token = (await cookies()).get(demoContentCookieName(slug))?.value;
-  return handleDemoContent(slug, token, demoSigningSecret(), {
-    getPost: getDemoPost,
-    verifyToken: validDemoToken,
-  });
+  return handleDemoContentRequest(
+    slug,
+    async (cookieName) => (await cookies()).get(cookieName)?.value,
+    demoSigningSecret(),
+    {
+      getPost: getDemoPost,
+      verifyToken: validDemoToken,
+    },
+  );
 }

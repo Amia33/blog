@@ -28,6 +28,23 @@ export async function handleDemoContent(
   return privateJson({ body: post.body });
 }
 
-export function demoContentCookieName(slug: string) {
-  return demoCookieName(slug);
+export async function handleDemoContentRequest(
+  slug: string,
+  getToken: (cookieName: string) => Promise<string | undefined>,
+  secret: string | null,
+  dependencies: {
+    getPost: (slug: string) => Promise<DemoPost | null>;
+    verifyToken: (
+      token: string | undefined,
+      slug: string,
+      secret: string,
+    ) => boolean;
+  },
+) {
+  if (!validDemoSlug(slug)) {
+    return privateJson({ error: "Post not available." }, 404);
+  }
+
+  const token = await getToken(demoCookieName(slug));
+  return handleDemoContent(slug, token, secret, dependencies);
 }

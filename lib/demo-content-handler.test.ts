@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { handleDemoContent } from "./demo-content-handler.ts";
+import {
+  handleDemoContent,
+  handleDemoContentRequest,
+} from "./demo-content-handler.ts";
 import { createDemoToken } from "./demo-gate.ts";
 import type { DemoPost } from "./demo-unlock-handler.ts";
 
@@ -50,4 +53,28 @@ test("content token cannot unlock another slug", async () => {
   });
   assert.equal(result.status, 404);
   assert.doesNotMatch(await result.text(), /Fictional body only/);
+});
+
+test("invalid content slug returns not found before reading a cookie", async () => {
+  let cookieRead = false;
+  let postLoaded = false;
+  const result = await handleDemoContentRequest(
+    "Invalid_Slug",
+    async () => {
+      cookieRead = true;
+      return token;
+    },
+    secret,
+    {
+      getPost: async () => {
+        postLoaded = true;
+        return post;
+      },
+      verifyToken: verify,
+    },
+  );
+
+  assert.equal(result.status, 404);
+  assert.equal(cookieRead, false);
+  assert.equal(postLoaded, false);
 });

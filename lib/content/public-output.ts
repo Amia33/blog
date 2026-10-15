@@ -1,8 +1,8 @@
 import { posts } from "../../.velite/index.js";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amia.example";
+import { getSiteUrl } from "../site-url.ts";
 
 export function getPublicSitemap() {
+  const siteUrl = getSiteUrl();
   return [
     { url: siteUrl, changeFrequency: "weekly" as const, priority: 1 },
     {
@@ -34,6 +34,7 @@ function escapeXml(value: string) {
 }
 
 export function getPublicFeed() {
+  const siteUrl = getSiteUrl();
   const items = posts
     .map(
       (post) =>

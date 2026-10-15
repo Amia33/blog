@@ -5,17 +5,19 @@ import test from "node:test";
 
 const root = process.cwd();
 const forbidden = [
-  "This is a synthetic demo body. The answer used for this example is",
+  "This is synthetic demonstration text only.",
   "moon-paper-7",
   "$argon2id$v=19$m=65536,p=4,t=3$aS1XLID7VoYvpONnc5rqTQ$OwWXUhMNUIpg2D82TrONy+RQd0TsHzvqgQjahSzHQBc",
 ];
 
-async function files(directory) {
+async function files(directory, required = false) {
   let entries;
   try {
     entries = await readdir(directory, { withFileTypes: true });
-  } catch {
-    return [];
+  } catch (error) {
+    if (required) throw error;
+    if (error.code === "ENOENT") return [];
+    throw error;
   }
   const nested = await Promise.all(
     entries.map((entry) => {
@@ -28,11 +30,12 @@ async function files(directory) {
 
 test("protected demo body and answer hash do not enter public generated output", async () => {
   const publicFiles = [
-    ...(await files(path.join(root, ".velite"))),
+    ...(await files(path.join(root, ".velite"), true)),
     ...(await files(path.join(root, ".next/server/app"))),
     ...(await files(path.join(root, ".next/static"))),
-    ...(await files(path.join(root, "public/static"))),
+    ...(await files(path.join(root, "public/static"), true)),
   ];
+  assert.ok(publicFiles.length > 0, "No generated public output was scanned");
 
   for (const file of publicFiles) {
     let contents;

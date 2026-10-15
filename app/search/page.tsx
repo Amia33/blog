@@ -22,10 +22,22 @@ export default function SearchPage() {
         <ArchiveHeading
           eyebrow="SEARCH"
           title="公開記事を探す"
-          description="記事のタイトル、本文、カテゴリー、タグを検索できます。"
+          description="記事のタイトル、概要、カテゴリー、タグを検索できます。"
         />
         <Suspense fallback={<p className="py-8">検索を準備しています。</p>}>
-          <PublicSearch posts={publicPosts} />
+          <PublicSearch
+            posts={publicPosts.map(
+              ({ title, slug, date, summary, category, tags, cover }) => ({
+                title,
+                slug,
+                date,
+                summary,
+                category,
+                tags,
+                cover,
+              }),
+            )}
+          />
         </Suspense>
       </main>
       <SiteFooter />

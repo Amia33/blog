@@ -14,9 +14,9 @@ This public repository is a runnable Next.js blog demo. All checked-in posts, se
 
 Public posts flow from `content/posts/public/` through the schema and MDX policy in `velite.config.ts` into generated `.velite/` data. `lib/content/public-posts.ts` provides sorted posts and category/tag helpers to the App Router pages; shared cards, lists, and post rendering live in `components/`.
 
-The public route map is listed above. Search is a client-side filter over public post data. Sitemap and RSS output are built from the public collection only. `content/settings/site.yaml` and `content/settings/ui-labels.yaml` are sample files and are not currently read by the app.
+The public route map is listed above. Search is a client-side filter over public post metadata and summaries; compiled article bodies are not sent to the search client. Sitemap, RSS, and robots output use the required valid HTTP(S) `NEXT_PUBLIC_SITE_URL` origin and fail rather than emitting placeholder URLs when it is unset or invalid. `content/settings/site.yaml` and `content/settings/ui-labels.yaml` remain unused examples; site metadata is configured through the environment, and interface labels remain in the components until a validated settings source is needed.
 
-The fictional gated demo uses a separate request-time path: `/demo/[slug]` displays only the post title/question and unlock form; the unlock POST checks BotID and rate limits before answer verification; a separate content GET validates the short-lived, slug-bound HttpOnly token before returning the body. Protected files are excluded from Velite, but remain public source in this repository. This demonstrates request handling, not confidentiality or authentication.
+The fictional gated demo uses a separate request-time path: `/demo/[slug]` displays only the post title/question and unlock form; the unlock POST checks BotID and rate limits before answer verification; a separate content GET validates the short-lived, slug-bound HttpOnly token before returning the body. Protected files are excluded from Velite, but remain public source in this repository. This demonstrates request handling, not confidentiality or authentication. Any future real private content requires a separate private content repository/submodule and a separate private deployment with access controls; it must never be checked out or deployed by this public demo.
 
 Suggested reading order for development:
 
@@ -28,7 +28,7 @@ Suggested reading order for development:
 
 ## Local setup and checks
 
-Use Node.js 20+ and pnpm 12.11.2.
+Use Node.js 22.18+ and pnpm 12.11.2.
 
 ```bash
 pnpm install
@@ -70,7 +70,7 @@ To enable the unlock endpoint in a deployment, configure:
 - `REDIS_KV_REST_API_URL`
 - `REDIS_KV_REST_API_TOKEN` (the read/write REST token; do not use the read-only token for rate limiting)
 - `DEMO_GATE_SIGNING_SECRET` (at least 32 characters; use a random secret)
-- `NEXT_PUBLIC_SITE_URL` (canonical site origin for metadata/feed links)
+- `NEXT_PUBLIC_SITE_URL` (required absolute origin for canonical metadata/feed links; set it before building, for example `https://blog.example.com`)
 
 Without Upstash or signing configuration, the unlock path fails closed while ordinary public routes still work. Rate-limit layers for `POST /api/demo-posts/:slug/unlock`:
 

@@ -30,7 +30,7 @@ export const remarkMdxPolicy = () => (tree: MdxNode) => {
       if (
         node.attributes?.some(
           (attribute) =>
-            attribute.type === "mdxJsxAttribute" &&
+            attribute.type !== "mdxJsxAttribute" ||
             typeof attribute.value !== "string",
         )
       ) {

@@ -1,7 +1,7 @@
 import { PostCard } from "@/components/post-card";
 import type { posts } from "@/.velite";
 
-type Post = (typeof posts)[number];
+type Post = Omit<(typeof posts)[number], "content">;
 
 export function PostList({ posts: items }: { posts: Post[] }) {
   if (items.length === 0) {

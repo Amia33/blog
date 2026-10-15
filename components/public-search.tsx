@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import type { posts } from "@/.velite";
 import { PostList } from "@/components/post-list";
 
-type Post = (typeof posts)[number];
+type Post = Omit<(typeof posts)[number], "content">;
 
 export function PublicSearch({ posts }: { posts: Post[] }) {
   const [query, setQuery] = useState("");
@@ -12,7 +12,7 @@ export function PublicSearch({ posts }: { posts: Post[] }) {
     const needle = query.trim().toLocaleLowerCase();
     if (!needle) return [];
     return posts.filter((post) =>
-      [post.title, post.summary, post.category, ...post.tags, post.content]
+      [post.title, post.summary, post.category, ...post.tags]
         .join(" ")
         .toLocaleLowerCase()
         .includes(needle),

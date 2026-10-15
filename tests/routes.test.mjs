@@ -6,6 +6,8 @@ import {
 } from "../lib/content/public-output.ts";
 import robots from "../app/robots.ts";
 
+process.env.NEXT_PUBLIC_SITE_URL = "https://amia.example";
+
 test("public RSS, robots, and sitemap list only public collection routes", () => {
   const urls = getPublicSitemap().map((entry) => entry.url);
   assert.ok(urls.every((url) => !url.includes("/demo/")));

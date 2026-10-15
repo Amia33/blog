@@ -7,7 +7,7 @@ import {
   tagPath,
 } from "@/lib/content/public-posts";
 
-type Post = (typeof posts)[number];
+type Post = Omit<(typeof posts)[number], "content">;
 
 export function PostCard({ post }: { post: Post }) {
   return (
