@@ -7,6 +7,7 @@ export const MAX_ANSWER_LENGTH = 256;
 export const MAX_REQUEST_BYTES = 2_048;
 export const COOKIE_PREFIX = "amia_demo_";
 
+// This signed bearer token demonstrates request gating; it does not make source content private.
 export type DemoClaims = {
   slug: string;
   expiresAt: number;
@@ -76,6 +77,7 @@ export function demoCookieName(slug: string) {
 
 export function demoCookiePath(slug: string) {
   if (!validDemoSlug(slug)) throw new Error("Invalid demo slug");
+  // Send the bearer token only to the matching post's content endpoint.
   return `/api/demo-posts/${slug}/content`;
 }
 

@@ -14,12 +14,14 @@ type Context = {
 };
 
 export async function POST(request: Request, { params }: Context) {
+  // Run BotID before request parsing or answer verification.
   const isBot = (await checkBotId()).isBot;
   if (isBot) return privateJson({ error: "Request denied." }, 403);
 
   const { slug } = await params;
   const secret = demoSigningSecret();
   const requestHeaders = await headers();
+  // Rate-limit only with Vercel's trusted client-IP header, never x-forwarded-for.
   const ip =
     requestHeaders.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ?? null;
   const cookieStore = await cookies();

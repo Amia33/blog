@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     ];
   },
   partialPrefetching: true,
+  // Bundle runtime demo files; tracing is packaging, not an access-control boundary.
   outputFileTracingIncludes: {
     "/demo/*": ["./content/posts/protected/*.mdx"],
     "/api/demo-posts/*": ["./content/posts/protected/*.mdx"],

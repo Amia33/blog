@@ -14,6 +14,7 @@ type Context = {
 };
 
 export async function GET(_request: Request, { params }: Context) {
+  // The handler checks the slug-scoped cookie on every body request.
   const { slug } = await params;
   const token = (await cookies()).get(demoContentCookieName(slug))?.value;
   return handleDemoContent(slug, token, demoSigningSecret(), {

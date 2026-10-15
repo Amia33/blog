@@ -38,6 +38,7 @@ export default function DemoPostPage({ params }: Props) {
 }
 
 async function DemoPostContent({ params }: Props) {
+  // Load public demo metadata at request time; never render the hash or gated body here.
   await connection();
   const { slug } = await params;
   const post = await getDemoPost(slug);

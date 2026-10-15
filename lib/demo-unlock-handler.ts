@@ -64,6 +64,7 @@ export async function handleDemoUnlock(
   }
   if (!dependencies.ip)
     return privateJson({ error: "Unable to unlock this demo post." }, 503);
+  // Count every submission before loading the record or running Argon2 verification.
   if (!(await dependencies.allowAttempt(slug, dependencies.ip))) {
     return privateJson({ error: "Unable to unlock this demo post." }, 429);
   }

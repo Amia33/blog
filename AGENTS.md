@@ -2,6 +2,12 @@
 
 This repository is a **public demo/test implementation** of the Amia blog foundation. Everything checked in is public, including files under `protected/`; only fictional samples belong here. Never add real drafts, personal data, credentials, private assets, real Q&A answers, or content whose disclosure would matter.
 
+## Architecture and flow invariants
+
+- Use the architecture and reading order in `README.md` as the starting point. Public MDX is validated and compiled by `velite.config.ts`, then consumed through `lib/content/public-posts.ts` and the App Router.
+- Keep protected demo records outside the public Velite collection. `/demo/[slug]` may display the fictional question but must not render the answer hash or gated body; the content API must validate the slug-bound token on every request before loading the body.
+- The demo's `server-only` loader, signed cookie, BotID checks, and rate limits demonstrate request boundaries only. They do not make repository content private or provide identity verification.
+
 ## Content and rendering
 
 - Use UTF-8 MDX posts under `content/posts/public/` with validated `title`, unique `slug`, `date`, `summary`, required `category`, `tags`, and cover asset fields. Posts can freely mix Chinese, Japanese, and English; do not add locale-specific post routing.

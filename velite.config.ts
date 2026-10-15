@@ -3,6 +3,7 @@ import { remarkMdxPolicy } from "./lib/content/mdx-policy";
 
 const post = {
   name: "Post",
+  // Protected demo MDX is loaded separately at request time, never into public output.
   pattern: "posts/public/**/*.mdx",
   schema: s.object({
     title: s.string().min(1).max(120),

@@ -18,6 +18,7 @@ export async function handleDemoContent(
     return privateJson({ error: "Post not available." }, 404);
   }
 
+  // Validate the post-scoped bearer token on every request before loading its body.
   if (!dependencies.verifyToken(token, slug, secret)) {
     return privateJson({ error: "Post not available." }, 404);
   }

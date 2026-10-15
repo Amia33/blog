@@ -22,6 +22,7 @@ export type DemoPost = {
   body: string;
 };
 
+// Protected demo files bypass Velite, but are still public repository content.
 const postsRoot = path.join(process.cwd(), "content/posts/protected");
 const postCache = new Map<string, DemoPost | null>();
 
@@ -68,6 +69,7 @@ export async function verifyDemoAnswer(post: DemoPost, answer: string) {
 let limiter: Ratelimit | undefined;
 
 function getLimiter() {
+  // No shared limiter configuration means unlock attempts are denied below.
   const url = process.env.REDIS_KV_REST_API_URL;
   const token = process.env.REDIS_KV_REST_API_TOKEN;
   if (!url || !token) return null;

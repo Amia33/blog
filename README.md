@@ -10,6 +10,22 @@ This public repository is a runnable Next.js blog demo. All checked-in posts, se
 - Public routes: `/`, `/posts`, `/posts/[slug]`, `/categories/[category]`, `/tags/[tag]`, `/search`, `/about`
 - Demo-only route: `/demo/[slug]`, backed by separate request-time API endpoints
 
+## Architecture and reading guide
+
+Public posts flow from `content/posts/public/` through the schema and MDX policy in `velite.config.ts` into generated `.velite/` data. `lib/content/public-posts.ts` provides sorted posts and category/tag helpers to the App Router pages; shared cards, lists, and post rendering live in `components/`.
+
+The public route map is listed above. Search is a client-side filter over public post data. Sitemap and RSS output are built from the public collection only. `content/settings/site.yaml` and `content/settings/ui-labels.yaml` are sample files and are not currently read by the app.
+
+The fictional gated demo uses a separate request-time path: `/demo/[slug]` displays only the post title/question and unlock form; the unlock POST checks BotID and rate limits before answer verification; a separate content GET validates the short-lived, slug-bound HttpOnly token before returning the body. Protected files are excluded from Velite, but remain public source in this repository. This demonstrates request handling, not confidentiality or authentication.
+
+Suggested reading order for development:
+
+1. `package.json` for commands, then `velite.config.ts` and `lib/content/mdx-policy.ts` for public content validation.
+2. `lib/content/public-posts.ts`, `app/page.tsx`, and `app/posts/[slug]/page.tsx` for public data-to-page flow.
+3. `components/post-body.tsx` and `mdx-components.tsx` for reviewed MDX rendering.
+4. `app/demo/[slug]/page.tsx`, both `app/api/demo-posts/[slug]/*/route.ts` handlers, and `lib/demo-gate.server.ts` / `lib/demo-*-handler.ts` for the gated demo boundary.
+5. `tests/` and the colocated `lib/demo-*.test.ts` files for existing behavior and security coverage.
+
 ## Local setup and checks
 
 Use Node.js 20+ and pnpm 12.11.2.
