@@ -3,7 +3,12 @@
     "allow": [
       "Shell(cmd:*)",
       "Shell(awk:*)",
-      "Shell(git:*)"
+      "Shell(git:*)",
+      "mcp__nextjs__nextjs_index",
+      "mcp__nextjs__nextjs_docs",
+      "Shell(command:*)",
+      "Shell(pnpm:*)",
+      "mcp__nextjs__nextjs_call"
     ],
     "deny": [],
     "defaultMode": "default"
