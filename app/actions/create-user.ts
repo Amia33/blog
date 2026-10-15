@@ -19,7 +19,7 @@ export async function createUser(formData: FormData) {
 }
 
 async function saveUser(userData: { name: string; email: string }) {
-  // Your database logic here
+  // Replace this stub with database persistence.
   console.log("Saving user:", userData);
   return { id: "123", ...userData };
 }
