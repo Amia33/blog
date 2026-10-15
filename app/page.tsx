@@ -18,7 +18,10 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8"
+      >
         <section className="grid gap-10 border-b border-base-300/70 py-14 sm:grid-cols-[1fr_17rem] sm:items-end sm:py-20">
           <div>
             <p className="text-xs tracking-[0.2em] text-primary">

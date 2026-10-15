@@ -18,7 +18,7 @@ export function PostCard({ post }: { post: Post }) {
           alt=""
           width={post.cover.width}
           height={post.cover.height}
-          className="aspect-[16/10] h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="aspect-[16/10] h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03]"
           sizes="(min-width: 640px) 13rem, 100vw"
         />
       </figure>
@@ -50,7 +50,7 @@ export function PostCard({ post }: { post: Post }) {
             <li key={tag}>
               <Link
                 href={tagPath(tag)}
-                className="badge badge-outline badge-sm"
+                className="badge badge-outline min-h-8 px-3"
               >
                 {tag}
               </Link>

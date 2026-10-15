@@ -70,7 +70,7 @@ export function DemoUnlock({ slug }: { slug: string }) {
             role="status"
             aria-live="polite"
           >
-            {message}
+            {pending ? "回答を確認しています…" : message}
           </p>
         </form>
       ) : (

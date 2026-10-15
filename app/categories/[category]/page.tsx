@@ -35,7 +35,10 @@ export default async function CategoryPage({ params }: Props) {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8"
+      >
         <ArchiveHeading
           eyebrow="CATEGORY"
           title={categoryLabel(category)}
