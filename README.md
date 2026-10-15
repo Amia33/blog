@@ -1,48 +1,69 @@
 # Amia blog demo
 
-This public repository is a runnable Next.js blog foundation. All posts, settings, and assets in it are synthetic examples. **Never add real drafts, private assets, credentials, or Q&A answers here.** The production blog should be a separate private repository containing the app and its real `content/` directory.
+This public repository is a runnable Next.js blog demo. All checked-in posts, settings, answers, and assets are fictional. **Never add real drafts, personal data, credentials, private assets, or Q&A answers here.**
 
-## Stack
+## Stack and routes
 
-- Next.js 16 App Router, React, and TypeScript
-- Tailwind CSS 4 with daisyUI 5
-- Velite for MDX collections, schemas, type generation, and public asset processing
-- Prettier, ESLint, and Stylelint
-- M PLUS 1, M PLUS 1 Code, and Noto Sans SC/system fallback for mixed Japanese, English, and Chinese text
+- Next.js 16 App Router, React, TypeScript, Tailwind CSS 4, and daisyUI 5
+- Velite validates public MDX posts and copies referenced public assets
+- Prettier, ESLint, Stylelint, and Node’s built-in test runner
+- Public routes: `/`, `/posts`, `/posts/[slug]`, `/categories/[category]`, `/tags/[tag]`, `/search`, `/about`
+- Demo-only route: `/demo/[slug]`, backed by separate request-time API endpoints
 
-## Local development
+## Local setup and checks
 
-Use pnpm 12.11.2 and Node.js 20+.
+Use Node.js 20+ and pnpm 12.11.2.
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-`pnpm dev` validates and generates the public content, watches the content directory, and starts Next.js. Open `http://localhost:3000`.
+`pnpm dev` validates/builds public content, watches content changes, and starts Next.js.
 
 ```bash
 pnpm content:build
+pnpm test
 pnpm lint
 pnpm lint:styles
 pnpm format:check
+pnpm exec tsc --noEmit
 pnpm build
 ```
 
-## Authoring content
+## Authoring posts
 
-Add public posts under `content/posts/public/<slug>.mdx`. A post needs `title`, `slug`, `date`, `summary`, `tags`, and a relative `cover` image. The schema in `velite.config.ts` validates required fields and unique slugs at build time. Use UTF-8; article text can mix Chinese, Japanese, and English without locale routing.
+Create a public post with:
 
-Public images live in `content/assets/public/` and are copied to generated, hashed paths under `public/static/`. Reference them relative to a post, for example `../../assets/public/morning-window.svg`. Site/UI copy is in `content/settings/`; any settings rendered into the site are public and must not contain secrets.
+```bash
+pnpm new:post
+```
 
-MDX supports the approved `<Details summary="...">...</Details>` component. Content validation rejects imports, exports, JavaScript expressions, and unsupported JSX component names. The demo's `content/posts/protected/` and `content/assets/protected/` are excluded from the public content pipeline, but this repository is public, so even those files are visible in Git. They contain synthetic placeholders only and do not demonstrate real access control.
+The helper asks for title, slug, date, summary, category, tags, and a cover beneath `content/assets/public/`; it refuses unsafe paths and overwrites. Non-Latin titles need an explicit ASCII slug. The post schema in `velite.config.ts` requires title, unique slug, date, summary, category, at least one tag, and a valid referenced cover. Public source lives under `content/posts/public/`; article prose can mix Chinese, Japanese, and English without locale routing.
 
-## Production repository and Vercel
+To scaffold a **fictional demo-gated** post, use `pnpm new:post --demo-gated`. The tool asks for a synthetic answer without echoing it and writes only an Argon2id hash into protected frontmatter. The helper’s output remains public in Git. Never use real answer secrets or private content.
 
-Create a separate private GitHub repository under your personal account by copying/continuing the app and its content contract. Put real posts, assets, and settings in that private repository's own `content/` directory; do not use this public demo as the production content store and do not add a private submodule. Connect the private app repository to Vercel through the GitHub integration. Vercel's documented private personal-account flow requires the repository owner to grant Vercel access; organization-owned private repositories have different commit-author/team rules.
+MDX allows only reviewed components such as `<Details summary="...">...</Details>`. Its AST policy rejects imports/exports, expressions, raw HTML, and unsupported JSX components. Public posts/assets are generated from public paths only. Protected samples are loaded by a server-only demo loader and are excluded from Velite, public asset output, static pages, indexes, metadata, sitemap, RSS, and search.
 
-The source repository being private does not make published pages private. Anything rendered into public HTML, metadata, client code, feeds, indexes, or public assets is available to visitors. The planned per-post Q&A feature is not implemented here. Confidential content must stay out of public/static output and later require server-side authorization with isolated private/no-store delivery; a Q&A answer by itself is not strong authentication.
+## Q&A gate warning and optional services
 
-## Validation and formatting
+The Q&A route is a **non-confidential software demonstration**, not authentication or access control suitable for secrets. An answer hash committed to a public repository is available for offline guessing; a cookie only illustrates server-side request checks. The demo record’s answer and body are synthetic and intentionally public.
 
-Use `pnpm format` to format files, `pnpm lint` for ESLint, and `pnpm lint:styles` for Stylelint. Run `pnpm content:build` after changing post metadata/assets, and `pnpm build` before deployment.
+To enable the unlock endpoint in a deployment, configure:
+
+- `REDIS_KV_REST_API_URL`
+- `REDIS_KV_REST_API_TOKEN` (the read/write REST token; do not use the read-only token for rate limiting)
+- `DEMO_GATE_SIGNING_SECRET` (at least 32 characters; use a random secret)
+- `NEXT_PUBLIC_SITE_URL` (canonical site origin for metadata/feed links)
+
+Without Upstash or signing configuration, the unlock path fails closed while ordinary public routes still work. Rate-limit layers for `POST /api/demo-posts/:slug/unlock`:
+
+- BotID classifies/challenges automated traffic. Client `instrumentation-client.ts` and server `checkBotId()` must match. BotID is not authentication or a rate limiter. Locally it generally reports non-bot; a deployed preview/browser-originated request is required to validate its challenge path.
+- Recommended manual Vercel Firewall/WAF rule: match `POST /api/demo-posts/:slug/unlock`, count by source IP, 20 requests per 10 minutes, begin in Log mode and then use 429. Counters are per-region and not a globally exact cap.
+- Upstash shared application limiter: 5 answer submissions per post/IP per 15 minutes, including successful submissions. Each attempt is counted before Argon2id verification to bound expensive work. Only use the trusted Vercel client IP header; do not trust user-provided `x-forwarded-for`.
+
+The content endpoint verifies a short-lived slug-bound HttpOnly cookie on every request and returns `private, no-store`. None of these controls makes this public demo’s sample content confidential.
+
+## Deployment notes
+
+The Vercel Firewall rule is a dashboard setting and is not automatically configured by this repository. Review Firewall behavior and plan limits before applying it. Public output intentionally excludes gated demo bodies, hashes, and records from Velite and public indexes.

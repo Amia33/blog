@@ -8,7 +8,8 @@
       "mcp__nextjs__nextjs_docs",
       "Shell(command:*)",
       "Shell(pnpm:*)",
-      "mcp__nextjs__nextjs_call"
+      "mcp__nextjs__nextjs_call",
+      "mcp__nextjs__browser_eval"
     ],
     "deny": [],
     "defaultMode": "default"

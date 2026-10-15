@@ -9,6 +9,7 @@ const post = {
     slug: s.slug("posts"),
     date: s.isodate(),
     summary: s.string().min(1).max(240),
+    category: s.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     tags: s.array(s.string().min(1)).min(1),
     cover: s.image(),
     content: s.mdx({

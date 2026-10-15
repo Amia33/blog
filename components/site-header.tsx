@@ -1,5 +1,11 @@
 import Link from "next/link";
 
+const navigation = [
+  { href: "/posts", label: "記事一覧" },
+  { href: "/about", label: "このブログについて" },
+  { href: "/search", label: "検索" },
+];
+
 export function SiteHeader() {
   return (
     <header className="border-b border-base-300/70">
@@ -10,16 +16,14 @@ export function SiteHeader() {
             日々の記録
           </span>
         </Link>
-        <nav
-          aria-label="メインナビゲーション"
-          className="ml-auto flex items-center gap-6 text-sm"
-        >
-          <Link href="/" className="link link-hover">
-            記事一覧
-          </Link>
-          <a href="#about" className="link link-hover">
-            このブログについて
-          </a>
+        <nav aria-label="メインナビゲーション" className="ml-auto">
+          <ul className="menu menu-horizontal gap-1 p-0 text-sm">
+            {navigation.map(({ href, label }) => (
+              <li key={href}>
+                <Link href={href}>{label}</Link>
+              </li>
+            ))}
+          </ul>
         </nav>
       </div>
     </header>
