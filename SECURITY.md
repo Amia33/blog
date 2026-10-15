@@ -1,9 +1,9 @@
-# Security Policy
+# Security policy
 
-## Supported Versions
+## Supported versions
 
-Only `master` branch is supported.
+Only the `master` branch is supported.
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-To report a vulnerability, please send an E-mail to `admin#amia.work` (change `#` to `@`). I will reply within a week.
+To report a vulnerability, email `admin#amia.work` and replace `#` with `@`. I will reply within a week.

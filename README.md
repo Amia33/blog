@@ -75,7 +75,7 @@ To enable the unlock endpoint in a deployment, configure:
 Without Upstash or signing configuration, the unlock path fails closed while ordinary public routes still work. Rate-limit layers for `POST /api/demo-posts/:slug/unlock`:
 
 - BotID classifies/challenges automated traffic. Client `instrumentation-client.ts` and server `checkBotId()` must match. BotID is not authentication or a rate limiter. Locally it generally reports non-bot; a deployed preview/browser-originated request is required to validate its challenge path.
-- Recommended manual Vercel Firewall/WAF rule: match `POST /api/demo-posts/:slug/unlock`, count by source IP, 20 requests per 10 minutes, begin in Log mode and then use 429. Counters are per-region and not a globally exact cap.
+- Recommended manual web application firewall (WAF) rule in Vercel Firewall: match `POST /api/demo-posts/:slug/unlock`, count by source IP, allow 20 requests per 10 minutes, begin in Log mode and then return 429. Counters are per-region, so this is not a globally exact cap.
 - Upstash shared application limiter: 5 answer submissions per post/IP per 15 minutes, including successful submissions. Each attempt is counted before Argon2id verification to bound expensive work. Only use the trusted Vercel client IP header; do not trust user-provided `x-forwarded-for`.
 
 The content endpoint verifies a short-lived slug-bound HttpOnly cookie on every request and returns `private, no-store`. None of these controls makes this public demo’s sample content confidential.
